@@ -8,23 +8,14 @@ import { Paciente } from '../model/paciente';
 })
 export class PacienteService {
   constructor(private http : HttpClient) { }
-  gravar(obj : Paciente) : Observable<any>{
-    return this.http.post("http://localhost:8080/api/paciente",obj);
+
+  public gravar (obj :Paciente) : Observable <Paciente>{
+    return this.http.post<Paciente>('http://localhost:8091/api/paciente',obj);
+
   }
-  alterar(obj : Paciente) : Observable<any>{
-    return this.http.put("http://localhost:8080/api/paciente",obj);
+  
+
+  listar(): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>('http://localhost:8091/api/paciente'); 
   }
- 
- remove(codigo : number) : Observable<any>{
-  return this.http.delete("http://localhost:8080/api/paciente/" + codigo);
-}
- 
-ler(codigo : number) : Observable<any>{
-  return this.http.get("http://localhost:8080/api/paciente/" + codigo);
-}
- 
-listar() : Observable<any>{
-  return this.http.get("http://localhost:8080/api/pacientes");
-}
- 
 }

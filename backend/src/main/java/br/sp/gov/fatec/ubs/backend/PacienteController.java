@@ -19,10 +19,10 @@ public class PacienteController {
     @Autowired
     PacienteRepository bd;
  
-    @PostMapping("api/paciente")
-    public String gravar(@RequestBody PacienteEntity obj){
+    @PostMapping("/api/paciente")
+    public PacienteEntity gravar(@RequestBody PacienteEntity obj){
         bd.save(obj);
-        return "paciente gravado com sucesso";
+        return obj;
     }
  
     @GetMapping("/api/paciente/{codigo}")
@@ -49,9 +49,8 @@ public class PacienteController {
     }
  
     @GetMapping("/api/paciente")
-    public List<PacienteEntity>listar(){
+    public Iterable<PacienteEntity>listar(){
         return bd.findAll();
 }
  
 }
- 
