@@ -32,7 +32,7 @@ public class PacienteEntity {
     private String telefoneResidencial;
     private String telefoneComercial;
     private String contato;
-    private String Email;
+    private String email;
     public int getCodigo() {
         return codigo;
     }
@@ -172,10 +172,10 @@ public class PacienteEntity {
         this.contato = contato;
     }
     public String getEmail() {
-        return Email;
+        return email;
     }
     public void setEmail(String email) {
-        Email = email;
+        email = email;
     }
    
    
