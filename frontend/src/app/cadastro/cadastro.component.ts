@@ -26,6 +26,7 @@ export class CadastroComponent {
     this.service.gravar(this.paciente).subscribe({
       next: (data) => {
         this.mensagem = "Paciente registrado com sucesso!";
+        this.limpar();
       },
       error: (msg) => {
         this.mensagem = "Ocorreu um erro, tente mais tarde.";
@@ -35,7 +36,9 @@ export class CadastroComponent {
   }
 
 
-  
+  public limpar() {
+    this.paciente = new Paciente;
+  }
 
     
   }
