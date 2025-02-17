@@ -2,7 +2,7 @@ import { PacienteService } from "../service/paciente.service";
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms'; 
-import { Paciente } from '../model/paciente';
+import { Paciente } from '../model/paciente.model';
 
 
 @Component({

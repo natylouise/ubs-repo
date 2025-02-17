@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
  
- 
+
 @CrossOrigin(origins = "*")
- 
- 
+
+
 @RestController
 public class PacienteController {
     @Autowired
@@ -51,12 +51,12 @@ public ResponseEntity<?> remover(@PathVariable long codigo) {
         put("mensagem", "paciente " + codigo + " removido com sucesso");
     }});
 }
+
  
- 
-    @PutMapping("/api/paciente")
+    @PutMapping("/api/paciente/{codigo}")
     public String alterar(@RequestBody PacienteEntity obj){
     bd.save(obj);
-    return "Paciente alterado com sucesso";
+    return "Paciente alterado com sucesso!";
     }
  
     @GetMapping("/api/paciente")
@@ -67,17 +67,18 @@ public ResponseEntity<?> remover(@PathVariable long codigo) {
     @PostMapping("/api/paciente/{codigo}/upload-ficha")
     public ResponseEntity<?> uploadFicha(@PathVariable long codigo, @RequestParam("file") MultipartFile file) {
         try {
-           
+            // Verifica se o arquivo não está vazio
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body(new HashMap<String, String>() {{
                     put("mensagem", "Arquivo vazio. Por favor, selecione um arquivo válido.");
                 }});
             }
- 
-           
+
+            // Aqui você pode salvar o arquivo no banco de dados ou em um diretório
+            // Exemplo: salvar o arquivo em um diretório local
             String filePath = "uploads/ficha-" + codigo + "-" + file.getOriginalFilename();
             file.transferTo(new java.io.File(filePath)); // Salvando o arquivo no diretório "uploads"
- 
+
             // Você também pode associar o arquivo com o paciente no banco de dados se necessário
             Optional<PacienteEntity> paciente = bd.findById(codigo);
             if (paciente.isPresent()) {
@@ -86,11 +87,11 @@ public ResponseEntity<?> remover(@PathVariable long codigo) {
                 pacienteEntity.setFicha(filePath); // Supondo que você tenha um campo 'ficha' na sua entidade
                 bd.save(pacienteEntity); // Atualizando o paciente com o novo caminho do arquivo
             }
- 
+
             return ResponseEntity.ok().body(new HashMap<String, String>() {{
                 put("mensagem", "Ficha carregada com sucesso.");
             }});
- 
+
         } catch (IOException e) {
             return ResponseEntity.status(500).body(new HashMap<String, String>() {{
                 put("mensagem", "Erro ao salvar o arquivo: " + e.getMessage());
@@ -98,4 +99,4 @@ public ResponseEntity<?> remover(@PathVariable long codigo) {
         }
     }
 }
- 
+

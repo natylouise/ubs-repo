@@ -1,92 +1,81 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ListaComponent } from './lista.component';
-import { PacienteService } from '../service/paciente.service';
-import { of } from 'rxjs';  // Importando o 'of' para criar a resposta mockada
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http'; // 🔥 Importe o HttpClient
 import { Paciente } from '../model/paciente.model';
- 
-describe('ListaComponent', () => {
-  let component: ListaComponent;
-  let fixture: ComponentFixture<ListaComponent>;
-  let pacienteService: jasmine.SpyObj<PacienteService>;
- 
-  beforeEach(async () => {
-    // Criando o mock do serviço
-    const pacienteServiceSpy = jasmine.createSpyObj('PacienteService', ['listar', 'remover', 'buscarPorCodigo']);
- 
-    await TestBed.configureTestingModule({
-      declarations: [ListaComponent],
-      providers: [
-        { provide: PacienteService, useValue: pacienteServiceSpy }
-      ]
-    }).compileComponents();
- 
-    fixture = TestBed.createComponent(ListaComponent);
-    component = fixture.componentInstance;
-    pacienteService = TestBed.inject(PacienteService) as jasmine.SpyObj<PacienteService>;
- 
-    // Mockando a resposta do método listar com a asserção de tipo
-    pacienteService.listar.and.returnValue(of([
-      {
-        codigo: 1,  // Aqui 'codigo' está sendo usado, mas a asserção força o tipo
-        nomeCompleto: 'João da Silva',
-        nomeSocial: 'João',
-        nomeMae: 'Maria da Silva',
-        nomePai: 'José da Silva',
-        dataNascimento: new Date('2000-01-01'),
-        sexo: 'Masculino',
-        nacionalidade: 'Brasileiro',
-        municipioNascimento: 'São Paulo',
-        racaCor: 'Branca',
-        frequentaEscola: 'Sim',
-        deficiente: 'Não',
-        visual: 'Não',
-        auditiva: 'Não',
-        motora: 'Não',
-        intelectual: 'Não',
-        contatoCelular: '11987654321',
-        contatoResidencial: '1122334455',
-        contatoComercial: '1133445566',
-        contatoEmail: 'joao@example.com'
-      },
-      {
-        codigo: 2,  // Aqui também
-        nomeCompleto: 'Maria Oliveira',
-        nomeSocial: 'Maria',
-        nomeMae: 'Ana Oliveira',
-        nomePai: 'Carlos Oliveira',
-        dataNascimento: new Date('1995-03-15'),
-        sexo: 'Feminino',
-        nacionalidade: 'Brasileira',
-        municipioNascimento: 'Rio de Janeiro',
-        racaCor: 'Parda',
-        frequentaEscola: 'Não',
-        deficiente: 'Sim',
-        visual: 'Sim',
-        auditiva: 'Não',
-        motora: 'Não',
-        intelectual: 'Sim',
-        contatoCelular: '11999887766',
-        contatoResidencial: '2133445566',
-        contatoComercial: '2233446677',
-        contatoEmail: 'maria@example.com'
-      }
-    ] as Paciente[]));  // Asserção de tipo
- 
-    fixture.detectChanges();
-  });
- 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
- 
-  it('should list pacientes correctly', () => {
-    // Testando a lista de pacientes mockada
-    component.listar();
-    expect(component.pacientes.length).toBe(2);  // Verifica se a lista tem dois pacientes
-    expect(component.pacientes[0].nomeCompleto).toBe('João da Silva');  // Verifica o nome do primeiro paciente
-    expect(component.pacientes[1].nomeCompleto).toBe('Maria Oliveira');  // Verifica o nome do segundo paciente
-  });
-});
+import { PacienteService } from '../service/paciente.service';
 
-export { ListaComponent };
- 
+@Component({
+  selector: 'app-lista',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './lista.component.html',
+  styleUrls: ['./lista.component.css'],
+  providers: [PacienteService]
+})
+export class ListaComponent {
+  mensagem: string = "";
+  pacientes: Paciente[] = [];
+  pacienteSelecionado: Paciente | null = null;  
+
+  constructor(private service: PacienteService, private http: HttpClient) { // 🔥 Injete o HttpClient aqui
+    this.listar();  
+  }
+
+  listar() {
+    this.service.listar().subscribe({
+      next: (data) => { this.pacientes = data; },
+      error: () => { this.mensagem = "Ocorreu um erro ao carregar os pacientes."; }
+    });
+  }
+
+  editar(codigo: number) {
+    this.service.buscarPorCodigo(codigo).subscribe({
+      next: (paciente: Paciente) => {
+        console.log('Paciente encontrado:', paciente);
+        this.pacienteSelecionado = { ...paciente, codigo: paciente.codigo ?? 0 }; 
+      },
+      error: (erro) => {
+        console.error('Erro ao carregar os dados do paciente:', erro);
+      }
+    });
+  }
+
+  salvarEdicao(paciente: Paciente) {
+    if (!paciente || !paciente.codigo) {
+      console.error("Paciente inválido!", paciente);
+      return;
+    }
+
+    this.http.put(`http://localhost:8091/api/paciente/${paciente.codigo}`, paciente)
+    .subscribe({
+        next: () => console.log('Paciente atualizado com sucesso!'),
+        error: (err: any) => console.error('Erro ao atualizar paciente:', err)
+      });
+  }
+
+  cancelarEdicao() {
+    this.pacienteSelecionado = null;  
+  }
+
+  remover(codigo: number) {
+    if (!codigo) {
+      console.error('Código inválido para remoção');
+      return;
+    }
+  
+    if (confirm('Tem certeza que deseja remover este paciente?')) {
+      this.service.remover(codigo).subscribe({
+        next: (response) => {  
+          console.log(response.mensagem);  
+          this.mensagem = response.mensagem; 
+          this.listar();
+        },
+        error: (erro) => {
+          console.error('Erro ao remover paciente:', erro);
+          this.mensagem = 'Erro ao remover paciente';
+        }
+      });
+    }
+  }
+}
