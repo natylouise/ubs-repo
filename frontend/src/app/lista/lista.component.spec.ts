@@ -26,51 +26,51 @@ describe('ListaComponent', () => {
 
     // Mockando a resposta do método listar com a asserção de tipo
     pacienteService.listar.and.returnValue(of([
-      {
-        codigo: 1,  // Aqui 'codigo' está sendo usado, mas a asserção força o tipo
-        nomeCompleto: 'João da Silva',
-        nomeSocial: 'João',
-        nomeMae: 'Maria da Silva',
-        nomePai: 'José da Silva',
-        dataNascimento: new Date('2000-01-01'),
-        sexo: 'Masculino',
-        nacionalidade: 'Brasileiro',
-        municipioNascimento: 'São Paulo',
-        racaCor: 'Branca',
-        frequentaEscola: 'Sim',
-        deficiente: 'Não',
-        visual: 'Não',
-        auditiva: 'Não',
-        motora: 'Não',
-        intelectual: 'Não',
-        contatoCelular: '11987654321',
-        contatoResidencial: '1122334455',
-        contatoComercial: '1133445566',
-        contatoEmail: 'joao@example.com'
-      },
-      {
-        codigo: 2,  // Aqui também
-        nomeCompleto: 'Maria Oliveira',
-        nomeSocial: 'Maria',
-        nomeMae: 'Ana Oliveira',
-        nomePai: 'Carlos Oliveira',
-        dataNascimento: new Date('1995-03-15'),
-        sexo: 'Feminino',
-        nacionalidade: 'Brasileira',
-        municipioNascimento: 'Rio de Janeiro',
-        racaCor: 'Parda',
-        frequentaEscola: 'Não',
-        deficiente: 'Sim',
-        visual: 'Sim',
-        auditiva: 'Não',
-        motora: 'Não',
-        intelectual: 'Sim',
-        contatoCelular: '11999887766',
-        contatoResidencial: '2133445566',
-        contatoComercial: '2233446677',
-        contatoEmail: 'maria@example.com'
-      }
-    ] as Paciente[]));  // Asserção de tipo
+        {
+          codigo: 1, // Aqui 'codigo' está sendo usado, mas a asserção força o tipo
+          nomeCompleto: 'João da Silva',
+          nomeSocial: 'João',
+          nomeMae: 'Maria da Silva',
+          nomePai: 'José da Silva',
+          dataNascimento: new Date('2000-01-01'),
+          sexo: 'Masculino',
+          nacionalidade: 'Brasileiro',
+          municipioNascimento: 'São Paulo',
+          racaCor: 'Branca',
+          frequentaEscola: 'Sim',
+          deficiente: 'Não',
+          visual: 'Não',
+          auditiva: 'Não',
+          motora: 'Não',
+          intelectual: 'Não',
+          contatoCelular: '11987654321',
+          contatoResidencial: '1122334455',
+          contatoComercial: '1133445566',
+          contatoEmail: 'joao@example.com'
+        },
+        {
+          codigo: 2,
+          nomeCompleto: 'Maria Oliveira',
+          nomeSocial: 'Maria',
+          nomeMae: 'Ana Oliveira',
+          nomePai: 'Carlos Oliveira',
+          dataNascimento: new Date('1995-03-15'),
+          sexo: 'Feminino',
+          nacionalidade: 'Brasileira',
+          municipioNascimento: 'Rio de Janeiro',
+          racaCor: 'Parda',
+          frequentaEscola: 'Não',
+          deficiente: 'Sim',
+          visual: 'Sim',
+          auditiva: 'Não',
+          motora: 'Não',
+          intelectual: 'Sim',
+          contatoCelular: '11999887766',
+          contatoResidencial: '2133445566',
+          contatoComercial: '2233446677',
+          contatoEmail: 'maria@example.com'
+        }
+      ] as unknown as Paciente[]));  // Asserção de tipo
 
     fixture.detectChanges();
   });

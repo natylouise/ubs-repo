@@ -1,6 +1,5 @@
 export interface Item {
-    id: number;
-    nome: string;
-    documento: string;
-  }
-  
+  id: number;
+  nome: string;
+  documento: string;
+}
