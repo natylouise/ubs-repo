@@ -17,5 +17,3 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*");  // Permite todos os cabeçalhos (pode restringir conforme necessário)
     }
 }
-
-
